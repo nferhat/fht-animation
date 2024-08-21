@@ -1,0 +1,41 @@
+[package]
+name = "fht-animation"
+version = "0.1.0"
+description = "An animation library for iced-rs"
+authors = ["Nadjib Ferhat <nferhat20@gmail.com>"]
+license = "GPL-3.0"
+edition = "2021"
+repository = "https://github.com/nferhat/fht-compositor"
+
+[dependencies]
+serde_arrays = "0.1.0"
+
+# Core animation enums and traits
+[dependencies.keyframe]
+version = "1.1.1"
+default-features = false
+
+# Support for iced-rs via a widget
+[dependencies.iced]
+git = "https://github.com/iced-rs/iced"
+version = "0.13.0-dev"
+default-features = false
+features = ["advanced"]
+optional = true
+
+# Type serialization support
+[dependencies.serde]
+version = "1"
+features = ["derive"]
+optional = true
+
+[lib]
+path = "src/lib.rs"
+
+[features]
+default = ["iced"]
+# Enable support for animation type serialization.
+# Useful for configuration file support
+serde = ["dep:serde"]
+# Enable support for iced-rs
+iced = ["dep:iced"]
