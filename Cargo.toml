@@ -33,7 +33,7 @@ optional = true
 path = "src/lib.rs"
 
 [features]
-default = ["iced"]
+default = []
 # Enable support for animation type serialization.
 # Useful for configuration file support
 serde = ["dep:serde"]
