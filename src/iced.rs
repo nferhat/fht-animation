@@ -55,6 +55,15 @@ impl Animable for iced::Vector {
     }
 }
 
+impl Animable for iced::Point {
+    fn lerp(start: &Self, end: &Self, progress: f64) -> Self {
+        Self {
+            x: f32::lerp(&start.x, &end.x, progress),
+            y: f32::lerp(&start.y, &end.y, progress),
+        }
+    }
+}
+
 impl Animable for iced::Size {
     fn lerp(start: &Self, end: &Self, progress: f64) -> Self {
         Self {

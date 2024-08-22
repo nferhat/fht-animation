@@ -1,6 +1,7 @@
 use std::time::{Duration, Instant};
 
 pub mod curve;
+#[cfg(feature = "iced")]
 pub mod iced;
 
 pub use curve::cubic::Curve as CubicCurve;
