@@ -27,7 +27,7 @@ macro_rules! rust_builtin_impl {
     ($t:ty) => {
         impl Animable for $t {
             fn lerp(start: &Self, end: &Self, progress: f64) -> Self {
-                (((*end - *start) as f64) * progress) as $t
+                (((*end - *start) as f64) * progress) as $t + *start
             }
         }
     };
@@ -151,6 +151,12 @@ impl<T: Animable> Animation<T> {
             self.duration = spring.duration();
         }
         self.curve = curve;
+    }
+
+    /// Restart the time state of the animation.
+    pub fn restart(&mut self) {
+        self.last_tick = Instant::now();
+        self.started_at = self.last_tick;
     }
 
     /// Tick the animation at a given [`Instant`]
