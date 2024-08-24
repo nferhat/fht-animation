@@ -56,6 +56,16 @@ pub enum AnimationState {
     Paused,
 }
 
+impl std::ops::Neg for AnimationState {
+    type Output = Self;
+    fn neg(self) -> Self::Output {
+        match self {
+            Self::Paused => Self::Running,
+            Self::Running => Self::Paused,
+        }
+    }
+}
+
 /// An animatable variable, with a `start` and `end`.
 ///
 /// This struct by itself does nothing, you should be calling [`Animation::tick`] on every frame
