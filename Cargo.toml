@@ -8,8 +8,6 @@ edition = "2021"
 repository = "https://github.com/nferhat/fht-compositor"
 
 [dependencies]
-serde_arrays = "0.1.0"
-
 # Core animation enums and traits
 [dependencies.keyframe]
 version = "1.1.1"
