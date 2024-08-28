@@ -16,6 +16,7 @@ const DELTA: f64 = 0.001;
 /// - https://github.com/GNOME/libadwaita/blob/main/src/adw-spring-params.c
 #[derive(Debug, Clone, Copy)]
 #[cfg_attr(feature = "serde", derive(Serialize))]
+#[cfg_attr(feature = "serde", serde(rename_all = "kebab-case"))]
 pub struct Curve {
     initial_velocity: f64,
     clamp: bool,
@@ -41,7 +42,7 @@ impl<'de> Deserialize<'de> for Curve {
         D: serde::Deserializer<'de>,
     {
         #[derive(Deserialize)]
-        #[serde(field_identifier, rename_all = "snake_case")]
+        #[serde(field_identifier, rename_all = "kebab-case")]
         enum Field {
             InitialVelocity,
             Clamp,
@@ -138,7 +139,7 @@ impl<'de> Deserialize<'de> for Curve {
             "initial_velocity",
             "clamp",
             "mass",
-            "damping_ratio",
+            "damping-ratio",
             "stiffness",
             "epsilon",
         ];

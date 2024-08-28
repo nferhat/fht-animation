@@ -5,6 +5,7 @@ pub mod spring;
 
 #[derive(Debug, Clone, Copy)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(rename_all = "kebab-case"))]
 pub enum AnimationCurve {
     /// Use a preset easing provided by [`keyframe`]
     Simple(Easing),
@@ -23,6 +24,7 @@ impl Default for AnimationCurve {
 /// Wrapper enum including all the easings [`keyframe`] provides.
 #[derive(Default, Debug, Clone, Copy)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(rename_all = "kebab-case"))]
 pub enum Easing {
     EaseIn,
     EaseInCubic,

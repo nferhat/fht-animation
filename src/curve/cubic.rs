@@ -16,6 +16,7 @@ pub const BAKED_POINTS: usize = 255;
 /// always set to `(0,0)` and `(1,1)` to ensure consistency in values.
 #[derive(Debug, Clone, Copy)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[cfg_attr(feature = "serde", serde(rename_all = "kebab-case"))]
 pub struct Curve {
     /// Our first control points for this curve.
     pub p1: ControlPoint,
