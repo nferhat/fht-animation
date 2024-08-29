@@ -1,4 +1,4 @@
-use std::time::{Duration, Instant};
+use std::time::Duration;
 
 pub mod curve;
 #[cfg(feature = "iced")]
@@ -86,8 +86,9 @@ pub struct Animation<T: Animable> {
     curve: AnimationCurve,
 
     // Animaton timing
-    started_at: Instant,
-    last_tick: Instant,
+    // started_at and last_tick = durations since unix epoch
+    started_at: Duration,
+    last_tick: Duration,
     duration: Duration,
 }
 
@@ -96,7 +97,7 @@ impl<T: Animable> Animation<T> {
     ///
     /// This returns None if `start == end`
     pub fn new(start: T, end: T, duration: Duration) -> Self {
-        let started_at = Instant::now();
+        let started_at = get_monotonic_time();
         let current_value = start.clone();
 
         Self {
@@ -166,15 +167,15 @@ impl<T: Animable> Animation<T> {
 
     /// Restart the time state of the animation.
     pub fn restart(&mut self) {
-        self.last_tick = Instant::now();
+        self.last_tick = get_monotonic_time();
         self.started_at = self.last_tick;
     }
 
-    /// Tick the animation at a given [`Instant`]
+    /// Tick the animation at a given [`Duration`], relative to `UNIX_EPOCH`
     ///
     /// It is assumed that the value from `now` is coming from a monotonically increasing system
     /// clock, for example libc's `clock_gettime(CLOCK_MONOTONIC)` on UNIX.
-    pub fn tick(&mut self, now: Instant) {
+    pub fn tick(&mut self, now: Duration) {
         if self.state == AnimationState::Paused {
             // This is adapted from slowdown animation code inside niri (yalter/niri)
             // But, to pause an animation, ANIMATION_SLOWDOWN must approach +inf, so adjusted_delta
@@ -196,7 +197,7 @@ impl<T: Animable> Animation<T> {
             return;
         }
 
-        let elapsed = now.duration_since(self.started_at).as_secs_f64();
+        let elapsed = (now - self.started_at).as_secs_f64();
         let total = self.duration.as_secs_f64();
         self.last_tick = now;
 
@@ -225,7 +226,7 @@ impl<T: Animable> Animation<T> {
     /// Check whether the animation is finished or not.
     #[inline]
     pub fn is_finished(&self) -> bool {
-        self.last_tick.duration_since(self.started_at) >= self.duration
+        self.last_tick - self.started_at >= self.duration
     }
 
     /// Get the last calculated value from [`Animation::tick`].
@@ -233,4 +234,12 @@ impl<T: Animable> Animation<T> {
     pub fn value(&self) -> &T {
         &self.current_value
     }
+}
+
+/// Get the monotonic time to tick an [`Animation`]
+///
+/// The duration value is the duration since UNIX_EPOCH
+pub fn get_monotonic_time() -> Duration {
+    let time = rustix::time::clock_gettime(rustix::time::ClockId::Monotonic);
+    Duration::new(time.tv_sec as u64, time.tv_nsec as u32)
 }

@@ -8,6 +8,7 @@ edition = "2021"
 repository = "https://github.com/nferhat/fht-compositor"
 
 [dependencies]
+rustix = { version = "0.38.35", default-features = false, features = ["time"] }
 # Core animation enums and traits
 [dependencies.keyframe]
 version = "1.1.1"
