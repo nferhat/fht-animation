@@ -119,19 +119,15 @@ impl<'de> Deserialize<'de> for Curve {
                     .ok_or_else(|| serde::de::Error::missing_field("damping_ratio"))?;
                 let stiffness =
                     stiffness.ok_or_else(|| serde::de::Error::missing_field("stiffness"))?;
-                let epsilon = epsilon.unwrap_or(0.0001);
-                // Calculate our damping based on the damping ratio.
-                // Thats how libadwaita does i
-                let critical_damping = 2.0 * f64::from(mass * stiffness).sqrt();
-                let damping = damping_ratio * critical_damping;
-                Ok(Curve {
+
+                Ok(Curve::new(
                     initial_velocity,
                     clamp,
                     mass,
-                    damping,
+                    damping_ratio,
                     stiffness,
                     epsilon,
-                })
+                ))
             }
         }
 
@@ -153,16 +149,23 @@ impl Curve {
         initial_velocity: f64,
         clamp: bool,
         mass: f64,
-        damping: f64,
+        damping_ratio: f64,
         stiffness: f64,
+        epsilon: Option<f64>,
     ) -> Self {
+        let epsilon = epsilon.unwrap_or(0.0001);
+        // Calculate our damping based on the damping ratio.
+        // Thats how libadwaita does it
+        let critical_damping = 2.0 * f64::from(mass * stiffness).sqrt();
+        let damping = damping_ratio * critical_damping;
+
         Self {
             initial_velocity,
             clamp,
             mass,
             damping,
             stiffness,
-            epsilon: 0.0001,
+            epsilon,
         }
     }
 
