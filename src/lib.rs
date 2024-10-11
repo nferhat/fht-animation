@@ -42,6 +42,22 @@ rust_builtin_impl!(i64);
 rust_builtin_impl!(f32);
 rust_builtin_impl!(f64);
 
+impl<T: Animable, const N: usize> Animable for [T; N] {
+    fn lerp(start: &Self, end: &Self, progress: f64) -> Self {
+        let Ok(ret) = start
+            .iter()
+            .zip(end)
+            .map(|(start, end)| T::lerp(start, end, progress))
+            .collect::<Vec<_>>()
+            .try_into()
+        else {
+            unreachable!("vector len should match slice from iterator")
+        };
+
+        ret
+    }
+}
+
 /// The state of an [`Animation`].
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
