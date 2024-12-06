@@ -245,6 +245,14 @@ impl<T: Animable> Animation<T> {
         self.last_tick - self.started_at >= self.duration
     }
 
+    /// Get the current progress of this animation in time, from `0.0` to `1.0`.
+    #[inline]
+    pub fn time_progress(&self) -> f64 {
+        let elapsed = (self.last_tick - self.started_at).as_secs_f64();
+        let total = self.duration.as_secs_f64();
+        (elapsed / total).clamp(0., 1.)
+    }
+
     /// Get the last calculated value from [`Animation::tick`].
     #[inline]
     pub fn value(&self) -> &T {
